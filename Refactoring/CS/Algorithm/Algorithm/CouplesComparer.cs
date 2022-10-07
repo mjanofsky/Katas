@@ -30,22 +30,22 @@ namespace Algorithm
         {
             Couple winningCouple = _couples.First();
 
-            foreach (var couple in _couples)
+            foreach (var challengers in _couples)
             {
                 switch (ageComparisonType)
                 {
                     case AgeComparisonType.ClosestInAge:
-                        if (couple.AgeDiff < winningCouple.AgeDiff)
+                        if (challengers.AgeDiff < winningCouple.AgeDiff)
                         {
-                            winningCouple = couple;
+                            winningCouple = challengers;
                         }
 
                         break;
 
                     case AgeComparisonType.FurthestInAge:
-                        if (couple.AgeDiff > winningCouple.AgeDiff)
+                        if (challengers.AgeDiff > winningCouple.AgeDiff)
                         {
-                            winningCouple = couple;
+                            winningCouple = challengers;
                         }
 
                         break;
@@ -63,30 +63,32 @@ namespace Algorithm
             {
                 for (var j = i + 1; j < _people.Count; j++)
                 {
-                    var person1 = _people[i];
-                    var person2 = _people[j];
-
-                    var currentCouple = new Couple();
-
-                    AssignOldestPersonToPerson1(person1, person2, currentCouple);
-
+                    var currentCouple = CreateCouple(_people[i], _people[j]);
+                    AssignOldestPersonToPerson1(currentCouple);
                     _couples.Add(currentCouple);
                 }
             }
-
-            void AssignOldestPersonToPerson1(Person person1, Person person2, Couple currentCouple)
+        }
+        Couple CreateCouple(Person person1, Person person2)
+        {
+            var currentCouple = new Couple
             {
-                if (person1.IsOlderThan(person2))
-                {
-                    currentCouple.Person1 = person1;
-                    currentCouple.Person2 = person2;
-                }
-                else
-                {
-                    currentCouple.Person1 = person2;
-                    currentCouple.Person2 = person1;
-                }
+                Person1 = person1,
+                Person2 = person2
+            };
+            return currentCouple;
+        }
+
+        void AssignOldestPersonToPerson1(Couple currentCouple)
+        {
+            if (currentCouple.Person2.IsOlderThan(currentCouple.Person1))
+            {
+                var tempPerson = currentCouple.Person1;
+                currentCouple.Person1 = currentCouple.Person2;
+                currentCouple.Person2 = tempPerson;
             }
         }
+
+
     }
 }
